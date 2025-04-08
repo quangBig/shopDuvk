@@ -8,7 +8,7 @@ const OrderList = () => {
     const { orders, fetchOrdersByUser, deleteOrder } = useOrderStore();
     const { user } = useUserStore();
     const [currentPage, setCurrentPage] = useState(1);
-    const ordersPerPage = 3;
+    const ordersPerPage = 2;
     const [isLoading, setIsLoading] = useState(true);
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -42,7 +42,7 @@ const OrderList = () => {
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
     return (
-        <div className="bg-white shadow-md rounded-lg p-4 max-w-full mx-auto h-screen">
+        <div className="bg-white shadow-md rounded-lg p-4 w-full -mt-7 ">
             {isLoading && (
                 <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 transition-opacity duration-500">
                     <FaApple className="text-white text-6xl animate-bounce opacity-100" />

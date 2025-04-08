@@ -24,12 +24,27 @@ const CartPage = () => {
         }
 
         // Lấy thông tin từ form
-        const customerName = document.querySelector('input[placeholder="Họ và Tên"]').value;
-        const phone = document.querySelector('input[placeholder="Số điện thoại"]').value;
-        const city = document.querySelector('select').value;
+        // const customerName = document.querySelector('input[placeholder="Họ và Tên"]').value;
+        // const phone = document.querySelector('input[placeholder="Số điện thoại"]').value;
+        // const city = document.querySelector('select').value;
+        // const detailedAddress = selectedDelivery === "delivery"
+        //     ? document.querySelector('input[placeholder="Địa chỉ cụ thể"]').value
+        //     : "Nhận tại cửa hàng";
+
+        const nameInput = document.querySelector('input[placeholder="Họ và Tên"]');
+        const phoneInput = document.querySelector('input[placeholder="Số điện thoại"]');
+        const citySelect = document.querySelector('select');
+        const addressInput = document.querySelector('input[placeholder="Địa chỉ cụ thể"]');
+        const paymentInput = document.querySelector('input[name="payment"]:checked');
+
+        const customerName = nameInput ? nameInput.value : "";
+        const phone = phoneInput ? phoneInput.value : "";
+        const city = citySelect ? citySelect.value : "";
         const detailedAddress = selectedDelivery === "delivery"
-            ? document.querySelector('input[placeholder="Địa chỉ cụ thể"]').value
+            ? (addressInput ? addressInput.value : "")
             : "Nhận tại cửa hàng";
+
+        const paymentMethod = paymentInput ? paymentInput.value : "cod";
 
         // Validate dữ liệu
         if (!customerName || !phone || (selectedDelivery === "delivery" && (!city || !detailedAddress))) {

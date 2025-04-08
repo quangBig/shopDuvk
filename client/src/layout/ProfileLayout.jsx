@@ -1,4 +1,4 @@
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import ProfileInfo from "../components/Profile/ProfileInfo";
 import OrderList from "../components/Profile/TaskOrder/OrderList";
 import { FiChevronDown } from "react-icons/fi";
@@ -13,108 +13,85 @@ import { FaApple } from "react-icons/fa";
 const ProfileLayout = () => {
     const [activeTab, setActiveTab] = useState("profile");
     const [isProductOpen, setIsProductOpen] = useState(false);
-    const [isSidebarOpen, setIsSidebarOpen] = useState(false); // Sidebar trên mobile
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const { orders } = useOrderStore();
     const [isLoading, setIsLoading] = useState(true);
+
     useEffect(() => {
         window.scrollTo(0, 0);
-        setTimeout(() => {
-            setIsLoading(false);
-        }, 400);
+        setTimeout(() => setIsLoading(false), 400);
     }, []);
 
-
     return (
-        <div className="flex flex-col md:flex-row h-screen bg-white mt-20">
+        <div className="flex flex-col md:flex-row bg-white mt-20 h-screen mb-10">
             {isLoading && (
-                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50 transition-opacity duration-500">
-                    <FaApple className="text-white text-6xl animate-bounce opacity-100" />
+                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+                    <FaApple className="text-white text-6xl animate-bounce" />
                 </div>
             )}
+
             {/* Nút mở Sidebar trên Mobile */}
             <button
                 onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-                className="md:hidden p-3 bg-gray-800 text-white rounded mb-4 flex items-center self-start ml-4"
+                className="md:hidden fixed -mt-2 left-4 bg-gray-800 text-white p-3 rounded flex items-center z-50"
             >
                 <IoMenu className="text-2xl" />
                 <span className="ml-2">Menu</span>
             </button>
 
             {/* Sidebar */}
-            <div className={`w-full md:w-1/5 ml-5 mt-5 bg-gray-200 shadow-lg p-6 transition-all duration-300
-                ${isSidebarOpen ? "block" : "hidden"} md:block`}
+            <div className={`fixed inset-y-0 left-0 w-64 bg-gray-200 shadow-lg p-6 transition-transform duration-300
+                ${isSidebarOpen ? "translate-x-0" : "-translate-x-full"} md:relative md:translate-x-0 md:w-1/5`}
             >
                 <h2 className="text-xl font-bold mb-6">Tài khoản</h2>
                 <ul>
                     <li
                         className={`cursor-pointer p-3 rounded-md ${activeTab === "profile" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`}
                         onClick={() => setActiveTab("profile")}
-
                     >
                         Hồ sơ
                     </li>
                     <li>
                         <button
                             onClick={() => setIsProductOpen(!isProductOpen)}
-                            className={`flex items-center justify-between w-full cursor-pointer p-3 rounded-md ${activeTab.startsWith("orders") ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`}
+                            className="flex items-center justify-between w-full p-3 rounded-md hover:bg-gray-200"
                         >
                             Đơn hàng
                             <FiChevronDown className={`transition-transform ${isProductOpen ? "rotate-180" : ""}`} />
                         </button>
                         {isProductOpen && (
                             <ul className="ml-6 mt-3 space-y-3">
-                                <li className={`cursor-pointer shadow-md p-3 rounded-md ${activeTab === "all-orders" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`}
-                                    onClick={() => setActiveTab("all-orders")}>
-                                    Tất cả đơn hàng
-                                    <span className="ml-10 bg-red-500 text-xs text-white py-1 px-2  rounded-full">
-                                        {orders.length}
-                                    </span>
-                                </li>
-                                <li className={`cursor-pointer shadow-md p-3 rounded-md ${activeTab === "process-orders" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`}
-                                    onClick={() => setActiveTab("process-orders")}>
-
-                                    Đơn hàng đang chờ xử lý
-                                    <span className="ml-10 bg-red-500 text-xs text-white py-1 px-2  rounded-full">
-                                        {orders.filter(order => order.orderStatus === "Đang xử lý").length}
-                                    </span>
-                                </li>
-                                <li className={`cursor-pointer shadow-md p-3 rounded-md ${activeTab === "ship-orders" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`}
-                                    onClick={() => setActiveTab("ship-orders")}>
-                                    Đơn hàng đang vận chuyển
-                                    <span className="ml-10 bg-red-500 text-xs text-white py-1 px-2  rounded-full">
-                                        {orders.filter(order => order.orderStatus === "Đang giao hàng").length}
-                                    </span>
-                                </li>
-                                <li className={`cursor-pointer shadow-md p-3 rounded-md ${activeTab === "success-orders" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`}
-                                    onClick={() => setActiveTab("success-orders")}>
-                                    Đơn hàng hoàn thành
-                                    <span className="ml-10 bg-red-500 text-xs text-white py-1 px-2  rounded-full">
-                                        {orders.filter(order => order.orderStatus === "Đơn hàng hoàn thành").length}
-                                    </span>
-                                </li>
-                                <li className={`cursor-pointer shadow-md p-3 rounded-md ${activeTab === "cancel-orders" ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`}
-                                    onClick={() => setActiveTab("cancel-orders")}>
-                                    Đơn hàng đã hủy
-                                    <span className="ml-10 bg-red-500 text-xs text-white py-1 px-2  rounded-full">
-                                        {orders.filter(order => order.orderStatus === "Đơn hàng hủy").length}
-                                    </span>
-                                </li>
+                                {[
+                                    { key: "all-orders", label: "Tất cả đơn hàng", filter: () => orders.length },
+                                    { key: "process-orders", label: "Đơn hàng đang chờ xử lý", filter: () => orders.filter(order => order.orderStatus === "Đang xử lý").length },
+                                    { key: "ship-orders", label: "Đơn hàng đang vận chuyển", filter: () => orders.filter(order => order.orderStatus === "Đang giao hàng").length },
+                                    { key: "success-orders", label: "Đơn hàng hoàn thành", filter: () => orders.filter(order => order.orderStatus === "Đơn hàng hoàn thành").length },
+                                    { key: "cancel-orders", label: "Đơn hàng đã hủy", filter: () => orders.filter(order => order.orderStatus === "Đơn hàng hủy").length }
+                                ].map(({ key, label, filter }) => (
+                                    <li key={key} className={`cursor-pointer p-3 rounded-md shadow-md ${activeTab === key ? "bg-blue-500 text-white" : "hover:bg-gray-200"}`}
+                                        onClick={() => setActiveTab(key)}>
+                                        {label}
+                                        <span className="ml-10 bg-red-500 text-xs text-white py-1 px-2 rounded-full">
+                                            {filter()}
+                                        </span>
+                                    </li>
+                                ))}
                             </ul>
                         )}
                     </li>
                 </ul>
-            </div >
+            </div>
 
-            {/* Nội dung */}
-            < div className="w-full md:w-3/4 p-6" >
+            {/* Nội dung chính */}
+            <div className={`w-full md:w-3/4 p-6 transition-all duration-300 ${isSidebarOpen ? "ml-64" : "ml-0 md:ml-0"}`}>
                 {activeTab === "profile" && <ProfileInfo />}
                 {activeTab === "all-orders" && <OrderList />}
                 {activeTab === "process-orders" && <ProcessList />}
                 {activeTab === "ship-orders" && <ShipList />}
                 {activeTab === "success-orders" && <SuccessList />}
                 {activeTab === "cancel-orders" && <CancelList />}
-            </div >
-        </div >
+            </div>
+        </div>
     );
 };
 
