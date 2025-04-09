@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useProductStore } from "../../stores/useProductStore";
 
 const CategoryWatch = ({ setSelectedProductLine }) => {
-    const { products } = useProductStore();
+    const { products, fetchAllProducts } = useProductStore();
 
-    const uniqueProductLines = ["All", ...new Set(products.filter(p => p.category === "Watch").map(p => p.productLine))];
+    useEffect(() => {
+        fetchAllProducts(); // Load lại khi component mount
+    }, []);
+
+    const uniqueProductLines = [
+        "All",
+        ...new Set(
+            products
+                .filter((p) => p.category === "Watch")
+                .map((p) => p.productLine)
+        ),
+    ];
 
     return (
         <div className="flex overflow-x-auto whitespace-nowrap gap-3 p-2 ml-5 md:flex-wrap">

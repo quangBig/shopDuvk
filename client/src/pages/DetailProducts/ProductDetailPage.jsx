@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import { FaApple, FaCheckCircle } from "react-icons/fa";
 import { Rating } from "@mui/material";
 import toast from "react-hot-toast";
@@ -7,6 +7,7 @@ import useCartStore from "../../stores/useCartStore";
 import RelateProduct from "../../components/Products/RelateProduct";
 import ProductDescription from "../../components/Products/ProductDescription";
 import { useProductStore } from "../../stores/useProductStore";
+import { useUserStore } from "../../stores/useUserStore";
 
 const ProductDetailPage = () => {
     const { id } = useParams();
@@ -15,6 +16,8 @@ const ProductDetailPage = () => {
     const [selectedColor, setSelectedColor] = useState(null);
     const [selectedCapacity, setSelectedCapacity] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
+    const { user } = useUserStore();
+    const navigate = useNavigate();
 
     useEffect(() => {
         window.scrollTo(0, 0);
@@ -31,6 +34,11 @@ const ProductDetailPage = () => {
     }, [id, fetchProductById]);
 
     const handleAddToCart = () => {
+        if (!user) {
+            toast.error("Vui lòng đăng nhập để thêm sản phẩm vào giỏ hàng!");
+            navigate("/notFound");
+            return;
+        }
         if (!selectedCapacity) {
             toast.error("Vui lòng chọn dung lượng sản phẩm!");
             return;

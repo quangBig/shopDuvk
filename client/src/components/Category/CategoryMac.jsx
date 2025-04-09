@@ -1,10 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useProductStore } from "../../stores/useProductStore";
 
 const CategoryMac = ({ setSelectedProductLine }) => {
-    const { products } = useProductStore();
+    const { products, fetchAllProducts } = useProductStore();
 
-    const uniqueProductLines = ["All", ...new Set(products.filter(p => p.category === "Mac").map(p => p.productLine))];
+    useEffect(() => {
+        fetchAllProducts(); // Lấy lại data sau khi F5
+    }, []);
+
+    const uniqueProductLines = [
+        "All",
+        ...new Set(
+            products
+                .filter((p) => p.category === "Mac")
+                .map((p) => p.productLine)
+        ),
+    ];
 
     return (
         <div className="flex overflow-x-auto whitespace-nowrap gap-3 p-2 ml-5 md:flex-wrap">
