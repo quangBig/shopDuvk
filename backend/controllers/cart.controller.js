@@ -113,7 +113,7 @@ export const updateCartItem = async (req, res) => {
 };
 
 // 🗑️ Xóa sản phẩm khỏi giỏ hàng
-import mongoose from "mongoose";
+
 
 export const removeCartItem = async (req, res) => {
     const { productId } = req.params; // Lấy productId từ URL
@@ -159,7 +159,6 @@ export const removeCartItem = async (req, res) => {
 // 🚀 Xóa toàn bộ giỏ hàng
 export const clearCart = async (req, res) => {
     const userId = req.user._id;
-
     try {
         await Cart.findOneAndDelete({ userId });
         res.status(200).json({ message: "Đã xóa giỏ hàng!" });

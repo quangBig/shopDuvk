@@ -57,19 +57,21 @@ export const useProductStore = create(
                 }
             },
 
-            deleteProduct: async (productId) => {
+            deleteOrder: async (productId) => {
                 set({ loading: true });
                 try {
-                    await axios.delete(`/api/products/${productId}`);
+                    await axios.delete(`/api/orders/${productId}`);
                     set((state) => ({
-                        products: state.products.filter((product) => product._id !== productId),
+                        orders: state.orders.filter((order) => order._id !== productId),
                         loading: false,
                     }));
+                    // toast.success("Đã huỷ đơn hàng thành công!");
                 } catch (error) {
                     set({ loading: false });
-                    toast.error("Lỗi khi xóa sản phẩm");
+                    toast.error("Lỗi khi huỷ đơn hàng");
                 }
             },
+
 
             updateProduct: async (productId, updateData) => {
                 set({ loading: true });

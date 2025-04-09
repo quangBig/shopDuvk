@@ -9,7 +9,6 @@ const router = express.Router();
 router.get("/", protectRoute, getCart); // Lấy giỏ hàng theo số điện thoại okok
 router.post("/add", protectRoute, addToCart); // Thêm sản phẩm vào giỏ hàng okok
 router.put("/update", protectRoute, updateCartItem); // Cập nhật số lượng sản phẩm ok  
-router.delete("/remove/:productId", protectRoute, removeCartItem);// Xóa sản phẩm khỏi giỏ hàng
+router.delete("/:productId", protectRoute, removeCartItem);// Xóa sản phẩm khỏi giỏ hàng
 router.delete("/clear", protectRoute, clearCart); // Xóa toàn bộ giỏ hàng
-
 export default router;

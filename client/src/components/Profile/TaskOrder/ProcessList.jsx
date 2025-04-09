@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import useOrderStore from "../../../stores/useOrderStore";
 import { useUserStore } from "../../../stores/useUserStore";
 import { FaApple } from "react-icons/fa";
+import toast from "react-hot-toast";
 // import useOrderStore from "../store/orderStore";
 
 const ProcessList = () => {
@@ -15,6 +16,19 @@ const ProcessList = () => {
     const totalPages = Math.ceil(orders.length / ordersPerPage);
 
     const paginate = (pageNumber) => setCurrentPage(pageNumber);
+    const handleDeleteOrder = async (productId) => {
+        const confirmDelete = window.confirm("Bạn có chắc chắn muốn hủy đơn hàng này?");
+        if (!confirmDelete) return;
+
+        try {
+            await deleteOrder(productId);
+            toast.success("Đã hủy đơn hàng thành công!");
+        } catch (err) {
+            console.error(err);
+            toast.error(err.response?.data?.message);
+        }
+    };
+
 
     // console.log("deletedOrders", deletedOrders);
     console.log("orders", orders);
@@ -92,6 +106,7 @@ const ProcessList = () => {
                                                         Hủy đơn hàng
                                                     </button>
                                                 )}
+
                                                 <button className="border border-gray-400 text-gray-600 px-4 py-2 rounded">
                                                     Liên Hệ Người Bán
                                                 </button>
