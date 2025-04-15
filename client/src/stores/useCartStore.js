@@ -6,6 +6,9 @@ const useCartStore = create((set, get) => ({
     cart: [], // Danh sách sản phẩm trong giỏ hàng
     loading: false,
     error: null,
+    clearCart: () => set({ cart: [] }), // Reset giỏ hàng về trống
+
+
 
     // 🔄 Lấy giỏ hàng từ server
     getCart: async () => {
@@ -67,7 +70,7 @@ const useCartStore = create((set, get) => ({
             set({ loading: true });
 
             // Gửi request với params & query string
-            await axios.delete(`/cart/remove/${productId}`, {
+            await axios.delete(`/cart/${productId}`, {
                 params: { capacity, color }
             });
             toast.success("Xóa sản phẩm thành công");
@@ -86,17 +89,7 @@ const useCartStore = create((set, get) => ({
 
 
 
-    // 🚀 Xóa toàn bộ giỏ hàng
-    clearCart: async () => {
-        try {
-            set({ loading: true });
-            await axios.delete("/cart/clear");
 
-            set({ cart: [], loading: false });
-        } catch (error) {
-            set({ error: error.response?.data?.message || "Lỗi khi xóa giỏ hàng", loading: false });
-        }
-    }
 }));
 
 export default useCartStore;

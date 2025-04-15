@@ -3,11 +3,11 @@ import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
 import path from "path";
 
-import authRoutes from "./routes/auth.route.js";
-import productRoutes from "./routes/product.route.js";
-import cartRoutes from "./routes/cart.route.js";
-import couponRoutes from "./routes/coupon.route.js";
-import orderRoutes from "./routes/order.route.js";
+import authRoutes from "./routes/auth.router.js";
+import productRoutes from "./routes/product.router.js";
+import cartRoutes from "./routes/cart.router.js";
+import couponRoutes from "./routes/coupon.router.js";
+import orderRoutes from "./routes/order.router.js";
 import { connectDB } from "./lib/db.js";
 
 dotenv.config();

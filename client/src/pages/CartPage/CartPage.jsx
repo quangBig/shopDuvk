@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useCartStore from "../../stores/useCartStore";
 import { MdDelete } from "react-icons/md";
 import useOrderStore from "../../stores/useOrderStore";
@@ -13,6 +13,7 @@ const CartPage = () => {
     const { cart, getCart, removeCartItem, updateCartItem, clearCart } = useCartStore();
     const { createOrder, orders, loading } = useOrderStore();
     const { user } = useUserStore();
+    const navigate = useNavigate();
     console.log(user, "user");
 
     console.log(orders, "orders");
@@ -23,30 +24,20 @@ const CartPage = () => {
             return;
         }
 
-        // Lấy thông tin từ form
-        // const customerName = document.querySelector('input[placeholder="Họ và Tên"]').value;
-        // const phone = document.querySelector('input[placeholder="Số điện thoại"]').value;
-        // const city = document.querySelector('select').value;
-        // const detailedAddress = selectedDelivery === "delivery"
-        //     ? document.querySelector('input[placeholder="Địa chỉ cụ thể"]').value
-        //     : "Nhận tại cửa hàng";
-
         const nameInput = document.querySelector('input[placeholder="Họ và Tên"]');
         const phoneInput = document.querySelector('input[placeholder="Số điện thoại"]');
         const citySelect = document.querySelector('select');
         const addressInput = document.querySelector('input[placeholder="Địa chỉ cụ thể"]');
         const paymentInput = document.querySelector('input[name="payment"]:checked');
 
-        const customerName = nameInput ? nameInput.value : "";
-        const phone = phoneInput ? phoneInput.value : "";
-        const city = citySelect ? citySelect.value : "";
+        const customerName = nameInput?.value || "";
+        const phone = phoneInput?.value || "";
+        const city = citySelect?.value || "";
         const detailedAddress = selectedDelivery === "delivery"
-            ? (addressInput ? addressInput.value : "")
+            ? addressInput?.value || ""
             : "Nhận tại cửa hàng";
+        const paymentMethod = paymentInput?.value || "cod";
 
-        const paymentMethod = paymentInput ? paymentInput.value : "cod";
-
-        // Validate dữ liệu
         if (!customerName || !phone || (selectedDelivery === "delivery" && (!city || !detailedAddress))) {
             toast.error("Vui lòng nhập đầy đủ thông tin!");
             return;
@@ -57,9 +48,8 @@ const CartPage = () => {
             return;
         }
 
-        // Chuẩn bị dữ liệu đơn hàng
         const orderData = {
-            userId: user._id, // THAY THẾ BẰNG ID USER THỰC TẾ
+            userId: user._id,
             items: cart.map(item => ({
                 productId: item.productId,
                 name: item.name,
@@ -77,26 +67,30 @@ const CartPage = () => {
                 city,
                 detailedAddress,
             },
-            paymentMethod: document.querySelector('input[name="payment"]:checked')?.value || "cod",
+            paymentMethod,
             orderStatus: "Đang xử lý",
         };
 
         try {
-            console.log("Dữ liệu gửi lên:", orderData); // Debug
-
             const newOrder = await createOrder(orderData);
-            clearCart();
-            // toast.success("Đặt hàng thành công!");
-            // navigate(`/order/${newOrder._id}`); // Mở comment nếu có trang xác nhận
+
+            // ✅ Clear cart và gọi lại getCart để cập nhật UI
+            clearCart();        // xóa trong store Zustand
+            navigate("/")
+
+            // gọi lại giỏ hàng từ backend hoặc local để cập nhật UI
+
+            // Thông báo thành công
+            // toast.success("Đặt hàng thành công! Giỏ hàng đã được reset.");
+
+            // Optional: chuyển trang xác nhận
+            // navigate(`/order/${newOrder._id}`);
         } catch (error) {
-            console.error("Chi tiết lỗi:", {
-                message: error.message,
-                response: error.response?.data,
-                config: error.config
-            });
+            console.error("Lỗi đặt hàng:", error);
             toast.error(error.response?.data?.message || "Lỗi khi tạo đơn hàng");
         }
     };
+
 
 
 
@@ -347,4 +341,3 @@ const CartPage = () => {
 };
 
 export default CartPage;
-

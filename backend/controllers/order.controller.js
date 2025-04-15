@@ -110,9 +110,23 @@ export const getProductbyStatus = async (req, res) => {
 export const deleteOrder = async (req, res) => {
     try {
         const { orderId } = req.params;
-        await Order.findByIdAndDelete(orderId);
-        res.status(200).json({ message: "Xóa đơn hàng thành cong!" });
-    } catch {
-        res.status(500).json({ message: "Lỗi xóa đơn hàng", error: error.message });
+
+        const order = await Order.findById(orderId);
+        if (!order) {
+            return res.status(404).json({ message: "Không tìm thấy đơn hàng" });
+        }
+
+        // Nếu đơn đã hủy hoặc đã giao thì không được hủy
+        if (order.status === 'Đã hủy' || order.status === 'Đã giao') {
+            return res.status(400).json({ message: "Đơn hàng đã hoàn thành hoặc đã hủy, không thể hủy nữa" });
+        }
+
+        order.status = 'Đã hủy';
+        await order.save();
+
+        res.status(200).json({ message: "Hủy đơn hàng thành công", order });
+    } catch (error) {
+        console.error("Lỗi khi hủy đơn hàng:", error);
+        res.status(500).json({ message: "Lỗi server khi hủy đơn hàng" });
     }
 }

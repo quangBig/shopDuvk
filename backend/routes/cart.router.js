@@ -10,5 +10,7 @@ router.get("/", protectRoute, getCart); // Lấy giỏ hàng theo số điện t
 router.post("/add", protectRoute, addToCart); // Thêm sản phẩm vào giỏ hàng okok
 router.put("/update", protectRoute, updateCartItem); // Cập nhật số lượng sản phẩm ok  
 router.delete("/:productId", protectRoute, removeCartItem);// Xóa sản phẩm khỏi giỏ hàng
-router.delete("/clear", protectRoute, clearCart); // Xóa toàn bộ giỏ hàng
+router.delete("/clearAll", clearCart); // Xóa toàn bộ giỏ hàng
+
+
 export default router;

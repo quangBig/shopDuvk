@@ -48,29 +48,17 @@ const useOrderStore = create((set) => ({
         }
     },
 
-    // fetchDeletedOrders: async (userId) => {
-    //     try {
-    //         set({ loading: true });
-    //         const response = await axios.get(`/api/orders/allDeleted/${userId}`);
-    //         set({ deletedOrders: response.data });
-    //     } catch (error) {
-    //         set({ error: error.response?.data?.message || "Lỗi khi lấy danh sách đơn hàng đã hủy" });
-    //     } finally {
-    //         set({ loading: false });
-    //     }
-    // },
 
     deleteOrder: async (orderId, userId) => {
         try {
-            set({ loading: true });
-            const response = await axios.put(`/api/orders/${orderId}`, { orderStatus: "Đơn hàng hủy" });
-            set({ deletedOrders: response.data.deletedOrders });
-            await useOrderStore.getState().fetchDeletedOrders(userId);
-        } catch (error) {
-            toast.error("Lỗi khi hủy đơn hàng");
-            set({ error: error.response?.data?.message });
-        } finally {
-            set({ loading: false });
+            const res = await axios.delete(`/api/orders/${orderId}`);
+            // Cập nhật lại orders sau khi hu
+            set((state) => ({
+                orders: state.orders.filter((order) => order._id !== orderId),
+                deletedOrders: [...state.deletedOrders, res.data],
+            }));
+        } catch (err) {
+            console.error("Lỗi khi huỷ đơn hàng:", err);
         }
     },
     // Lấy danh sách đơn hàng theo trạng thái

@@ -5,7 +5,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 
 const BannnerProduct = () => {
-    const images = ["1.png", "3.png", "4.png", "5.png", "6.png"];
+    const images = ["3.png", "4.png", "5.png", "6.png"];
 
     return (
         <div className="relative w-full max-w-[1400px] mx-auto mt-24 ">
